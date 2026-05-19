@@ -1,0 +1,633 @@
+Online Library Management System - Complete Project Guide
+
+1. Project Overview
+
+The Online Library Management System is a web application for managing a small
+library. It supports two main user types:
+
+- Admin
+- Student
+
+The system lets an admin manage books, students, categories, authors, issued
+books, book PDFs, and dashboard analytics. Students can browse books, buy/issue
+books, download PDFs for books they own, manage their profile, and remove books
+from their library.
+
+This project was rebuilt from an older PHP/MySQL style system into a simpler
+React and Express application. The new version does not require XAMPP,
+phpMyAdmin, MySQL, or database import steps. It stores data locally in a JSON
+file, which makes it easier to run, present, test, and move between machines.
+
+
+2. Project Purpose
+
+The purpose of this project is to provide a complete digital library workflow:
+
+- Let students create accounts and use an online library.
+- Let students browse available books.
+- Let students buy/issue books from the library.
+- Let students download the PDF for books they already own.
+- Let students re-download PDFs from their issued books page at any time.
+- Let admins manage the library records.
+- Let admins upload book images and PDFs.
+- Let admins understand library activity through analytics.
+- Keep the setup simple by using a JSON file instead of a database server.
+
+The project is suitable for:
+
+- Class presentations
+- Demonstrating full-stack development
+- Showing role-based access
+- Showing CRUD operations
+- Showing file uploads
+- Showing simple analytics and charting
+- Running locally without complex setup
+
+
+3. Main Users
+
+Admin:
+The admin controls the library. The admin can add, edit, and delete books,
+manage students, manage categories, view authors, issue and return books, upload
+book images and PDFs, and inspect analytics.
+
+Student:
+The student uses the library. The student can sign up, log in, browse books,
+view details, buy books, download PDFs, see issued books, remove books from
+their library, and update their profile/password.
+
+
+4. Stack
+
+Frontend:
+- React
+- Vite
+- CSS
+- lucide-react icons
+
+Backend:
+- Node.js
+- Express
+- JSON Web Tokens for authentication
+- Multer for file uploads
+- CORS
+- dotenv
+
+Storage:
+- Local JSON file: server/data/library.json
+- Book images: server/uploads/bookimg
+- Book PDFs: server/uploads/bookpdf
+
+Development tools:
+- npm
+- nodemon for backend development
+- Vite development server for frontend development
+
+
+5. Project Structure
+
+Project root:
+- package.json
+- README.md
+- PROJECT_HISTORY.txt
+- PROJECT_GUIDE.txt
+- client/
+- server/
+
+client/:
+- React frontend source code.
+- Main app file: client/src/main.jsx
+- Main styling file: client/src/styles.css
+- Static image assets under client/src/assets
+
+server/:
+- Express backend source code.
+- Main API file: server/src/index.js
+- Data store logic: server/src/store.js
+- Authentication helpers: server/src/auth.js
+- Auth middleware: server/src/middleware/auth.js
+- JSON data file: server/data/library.json
+- Uploaded book images: server/uploads/bookimg
+- Uploaded book PDFs: server/uploads/bookpdf
+
+
+6. How To Install The Project
+
+From the project root, run:
+
+npm.cmd run install:all
+
+This installs dependencies for both:
+- server
+- client
+
+
+7. How To Run The Project
+
+The folder can live anywhere on a developer's computer. In the commands below,
+replace <your-folder-location> with the real parent folder path where the
+project exists.
+
+Example project folder:
+
+<your-folder-location>\online_library_system
+
+Terminal 1 - backend:
+
+cd "<your-folder-location>\online_library_system\server"
+npm.cmd run dev
+
+Backend URL:
+
+http://localhost:5000
+
+Terminal 2 - frontend:
+
+cd "<your-folder-location>\online_library_system\client"
+npm.cmd run dev
+
+Frontend URL:
+
+http://localhost:5173
+
+Open the frontend URL in the browser to use the system.
+
+
+8. Test Accounts
+
+Admin account:
+
+Username: admin
+Password: admin
+
+Student account:
+
+Email: anujk@gmail.com
+Password: admin
+
+
+9. Data Storage
+
+The project stores its main records in:
+
+server/data/library.json
+
+This file includes:
+- Admins
+- Students
+- Books
+- Authors
+- Categories
+- Issues
+- Analytics events
+
+Uploaded files are stored separately:
+
+server/uploads/bookimg
+server/uploads/bookpdf
+
+If server/data/library.json is deleted, the backend recreates it from the seed
+data inside server/src/store.js when the backend starts again.
+
+
+10. Resetting Demo Data
+
+To reset demo data:
+
+1. Stop the backend server.
+2. Delete server/data/library.json.
+3. Start the backend again.
+
+The backend will recreate the JSON file from the seed data.
+
+Uploaded files are not automatically deleted by this reset. If you also want to
+reset uploaded files, manually clean:
+
+server/uploads/bookimg
+server/uploads/bookpdf
+
+Keep demo-library-book.pdf if you still want existing demo books to have a test
+PDF download.
+
+
+11. Authentication And Roles
+
+The backend uses JWT authentication.
+
+When a user logs in, the backend returns:
+- A token
+- Public user information
+
+The frontend stores the auth data in localStorage under:
+
+library-auth
+
+Protected API routes require the token in the Authorization header.
+
+Role-based access:
+- Admin-only routes use admin role checks.
+- Student-only routes use student role checks.
+- Shared authenticated routes require any logged-in user.
+
+
+12. Admin Features
+
+Admin Dashboard:
+- Shows system totals:
+  - Books
+  - Issued books
+  - Students
+  - Authors
+  - Categories
+- Shows analytics totals:
+  - Purchased books
+  - Revenue
+  - Book clicks
+- Includes a time filter:
+  - From date
+  - To date
+  - Reset button
+- Shows three full-width charts:
+  - Purchased books over time
+  - Revenue over time
+  - Book clicks over time
+
+Books Tab:
+- Shows all books in a table.
+- Shows book image, title, author, ISBN, availability, purchases, revenue, and
+  clicks.
+- Admin can edit a book.
+- Admin can delete a book.
+
+Add Book Tab:
+- Separate tab from the Books table.
+- Admin can add a new book.
+- Admin can edit an existing book when opened from the Books tab.
+- Fields:
+  - Book name
+  - Category
+  - Author text input
+  - ISBN
+  - Price
+  - Quantity
+  - Book image
+  - Book PDF
+- The author field is text input, not a dropdown.
+- If the typed author already exists, the backend reuses it.
+- If the typed author is new, the backend creates it automatically.
+
+Issues Tab:
+- Admin can manually issue a book to a student.
+- Admin can return an issued book.
+- Admin can record a fine during return.
+- Admin can see issue records.
+
+Students Tab:
+- Admin can view student records.
+- Admin can block or activate students.
+
+Authors Tab:
+- Admin can view authors.
+- Admin can edit authors.
+- Admin can delete authors.
+- There is no add-author form in this tab.
+- New authors are mainly created through Add/Edit Book by typing a new author
+  name.
+
+Categories Tab:
+- Admin can add categories.
+- Admin can edit categories.
+- Admin can delete categories.
+- Admin can set category status.
+
+Password Tab:
+- Admin can change their password.
+
+
+13. Student Features
+
+Student Dashboard:
+- Shows student-facing totals:
+  - Listed books
+  - Active issues
+  - Issue history
+
+Books Tab:
+- Shows books in card layout.
+- Desktop layout displays 3 books per row.
+- Tablet layout displays 2 books per row.
+- Mobile layout displays 1 book per row.
+- Cards show:
+  - Book image
+  - Book title
+  - Author
+  - Category
+  - ISBN
+  - Price
+  - Available quantity
+  - Buy or Download button
+  - Details button
+
+Buy Behavior:
+- If the student does not have the book, they can buy it.
+- If the book is unavailable, Buy is disabled.
+- If the student already has the book, Buy is disabled/replaced by Download.
+- The backend also blocks duplicate buys.
+
+Details Modal:
+- Student can open book details.
+- Opening details records a book click/view.
+- Details include:
+  - Availability
+  - Book name
+  - Author
+  - Category
+  - ISBN
+  - Price
+  - Total copies
+  - Currently issued count
+  - Book ID
+- If the student owns the book, the modal shows Download PDF.
+- If the student does not own the book, the modal shows Buy.
+
+Issued Books Tab:
+- Shows books the student has issued/bought.
+- Shows:
+  - Book
+  - ISBN
+  - Issued date
+  - Returned date
+  - Fine
+  - Status
+- Student can download the PDF for owned books.
+- Student can remove a book from their library.
+- Student can return later and re-download the PDF.
+
+Profile Tab:
+- Student can update their full name.
+- Student can update their mobile number.
+- Student ID and email are displayed but not edited.
+
+Password Tab:
+- Student can change their password.
+
+Signup:
+- New students can create accounts.
+
+Forgot Password:
+- Students can reset their password using email and mobile number.
+
+
+14. Analytics
+
+The system records analytics events in the JSON data file.
+
+Tracked events:
+- Purchase event
+- View/click event
+
+Purchase event:
+- Created when a student buys a book.
+- Used to calculate:
+  - Purchased books
+  - Revenue
+
+View/click event:
+- Created when a student opens book details.
+- Used to calculate:
+  - Book clicks
+
+Admin dashboard analytics:
+- Filtered by From and To dates.
+- Default From date: 2026-05-01.
+- Default To date: today's date.
+- Displays totals and charts for the selected period.
+
+Per-book analytics:
+- Admin Books tab shows each book's:
+  - Total purchases
+  - Total revenue
+  - Total clicks
+
+
+15. PDF Download Rules
+
+Admins:
+- Can upload a PDF when adding a book.
+- Can upload a new PDF when editing a book.
+
+Students:
+- Can download a PDF only if they own/have issued the book.
+- Can download from the Books tab when the book is already owned.
+- Can download from the Details modal when the book is already owned.
+- Can download from the Issued Books tab at any time.
+
+Security:
+- PDFs are downloaded through an authenticated API endpoint.
+- The backend checks that the logged-in student owns the requested book before
+  sending the file.
+
+
+16. Important API Routes
+
+Authentication:
+- POST /api/auth/student/login
+- POST /api/auth/admin/login
+- POST /api/auth/student/signup
+- POST /api/auth/student/forgot-password
+
+Books:
+- GET /api/books
+- POST /api/books/:id/view
+- GET /api/books/:id/download
+
+Student:
+- GET /api/student/dashboard
+- GET /api/student/issues
+- POST /api/student/issues
+- DELETE /api/student/issues/:id
+- GET /api/student/profile
+- PUT /api/student/profile
+- POST /api/student/change-password
+
+Admin:
+- GET /api/admin/dashboard
+- POST /api/admin/books
+- PUT /api/admin/books/:id
+- DELETE /api/admin/books/:id
+- GET /api/admin/issues
+- POST /api/admin/issues
+- PATCH /api/admin/issues/:id/return
+- GET /api/admin/students
+- PATCH /api/admin/students/:id/status
+- GET /api/admin/authors
+- PUT /api/admin/authors/:id
+- DELETE /api/admin/authors/:id
+- GET /api/admin/categories
+- POST /api/admin/categories
+- PUT /api/admin/categories/:id
+- DELETE /api/admin/categories/:id
+- POST /api/admin/change-password
+
+
+17. User Stories
+
+Admin User Stories:
+
+As an admin, I want to log in so I can manage the library.
+
+As an admin, I want to see dashboard totals so I can understand the current
+state of the system.
+
+As an admin, I want to filter analytics by date so I can inspect activity during
+a specific period.
+
+As an admin, I want to see purchased books, revenue, and clicks in separate
+charts so the data is readable.
+
+As an admin, I want to add a book with an image and PDF so students can browse
+and download it.
+
+As an admin, I want to type an author name while adding a book so I do not need
+to create authors separately first.
+
+As an admin, I want the system to reuse existing authors automatically so
+duplicate author records are reduced.
+
+As an admin, I want to edit book details so I can correct mistakes.
+
+As an admin, I want to delete books so I can remove old records.
+
+As an admin, I want to see per-book purchases, revenue, and clicks so I can
+understand which books are popular.
+
+As an admin, I want to manage students so I can block or activate accounts.
+
+As an admin, I want to issue books manually so I can support offline or direct
+library workflows.
+
+As an admin, I want to return books and add fines so the library records stay
+accurate.
+
+As an admin, I want to manage categories so books can be grouped properly.
+
+As an admin, I want to edit or delete authors so records stay clean.
+
+As an admin, I want to change my password so my account remains secure.
+
+Student User Stories:
+
+As a student, I want to sign up so I can use the online library.
+
+As a student, I want to log in so I can access my account.
+
+As a student, I want to reset my password if I forget it.
+
+As a student, I want to browse books in a clean card layout so I can find books
+easily.
+
+As a student, I want to search books so I can quickly find a title, author, or
+ISBN.
+
+As a student, I want to open book details so I can inspect the book before
+buying it.
+
+As a student, I want to buy a book so it is added to my issued books/library.
+
+As a student, I should not be able to buy the same book again if I already have
+it.
+
+As a student, I want to download the PDF after buying a book so I can read it.
+
+As a student, I want to re-download a PDF later from my Issued Books tab.
+
+As a student, I want to remove a book from my library so I can clean up my
+issued books list.
+
+As a student, I want to update my profile so my name and mobile number stay
+current.
+
+As a student, I want to change my password so my account remains secure.
+
+
+18. Developer Notes
+
+The project intentionally avoids a real database. The JSON file keeps the setup
+simple, but it also means:
+- There is no concurrent write protection like a production database.
+- It is best suited for demos, local development, and class projects.
+- Production usage would require replacing JSON storage with a database.
+
+Most frontend logic is currently inside:
+
+client/src/main.jsx
+
+Most backend logic is split between:
+
+server/src/index.js
+server/src/store.js
+
+If adding new backend features:
+- Add API routes in server/src/index.js.
+- Add data manipulation logic in server/src/store.js.
+- Keep auth role checks on protected routes.
+
+If adding new frontend features:
+- Add UI behavior in client/src/main.jsx.
+- Add styling in client/src/styles.css.
+- Prefer matching the existing table, form, card, and tab patterns.
+
+
+19. Known Demo Choices
+
+Demo analytics:
+- The seed data includes artificial purchase, revenue, and click history so the
+  dashboard charts are useful during presentations.
+
+Demo PDF:
+- Existing seeded books use demo-library-book.pdf so PDF download can be tested
+  without uploading PDFs for every old record.
+
+Date defaults:
+- Dashboard From date defaults to 2026-05-01.
+- Dashboard To date defaults to the current date.
+
+
+20. Build Check
+
+To check that the frontend builds:
+
+npm.cmd --prefix client run build
+
+To check backend syntax manually:
+
+node --check server\src\store.js
+node --check server\src\index.js
+
+
+21. Quick Presentation Script
+
+1. Open http://localhost:5173.
+2. Log in as admin.
+3. Show the dashboard totals and analytics charts.
+4. Open Books and show per-book purchases, revenue, and clicks.
+5. Open Add Book and show image/PDF upload.
+6. Open Students and show block/activate.
+7. Log out.
+8. Log in as student.
+9. Show book browsing with 3 books per row.
+10. Open Details to demonstrate click tracking.
+11. Buy a book.
+12. Show that the same book cannot be bought twice.
+13. Download the PDF.
+14. Open Issued Books and re-download the PDF.
+15. Remove the book from the library.
+
+
+22. Summary
+
+This project is a complete local full-stack library management system. It
+combines role-based authentication, CRUD management, book issuing, PDF upload
+and download, analytics tracking, and a responsive React user interface. It is
+designed to be easy to run and easy to explain, while still demonstrating real
+full-stack application behavior.

@@ -1,0 +1,288 @@
+Online Library Management System - Project Creation History
+
+This file records the software creation and update process as a conversation
+between Ahmed and CODEX.
+
+Ahmed:
+Convert the old library management system from PHP/MySQL into a simpler project
+that does not require XAMPP, phpMyAdmin, MySQL, or a database import.
+
+CODEX:
+Rebuilt the project as a two-part application:
+- Frontend: React with Vite
+- Backend: Node.js with Express
+- Storage: local JSON file at server/data/library.json
+
+The old PHP pages and MySQL workflow were replaced with:
+React frontend -> Express API -> JSON file storage
+
+The app kept the main library workflows:
+- Admin login
+- Student login and signup
+- Forgot password
+- Student profile updates
+- Book listing
+- Book management
+- Student management
+- Author management
+- Category management
+- Issue and return records
+
+CODEX also added README instructions for:
+- Installing dependencies
+- Running the backend
+- Running the frontend
+- Test admin and student accounts
+- Resetting demo data
+
+Ahmed:
+Run the app please.
+
+CODEX:
+Inspected the project scripts and found:
+- Root package.json
+- client/package.json for the Vite React frontend
+- server/package.json for the Express backend
+
+Started both development servers:
+- Backend: http://localhost:5000
+- Frontend: http://localhost:5173
+
+Verified the frontend responded successfully.
+
+Ahmed:
+Can you please, in the admin panel, make the add book a separate tab, and remove
+the add book component from the original page.
+
+CODEX:
+Updated the admin panel so Add Book became a separate tab.
+
+Changes made:
+- Added a new "Add book" tab in the admin sidebar.
+- Removed the add-book form from the Books tab.
+- Kept the Books tab focused on the books table.
+- Preserved edit behavior by opening the Add Book tab in edit mode when an admin
+  clicks the edit button on a book.
+- Added shared admin-level edit state so the selected book can move between tabs.
+
+Verified the frontend build.
+
+Ahmed:
+I want to advance the dashboard to add some analysis. Add a history record for
+the number of books purchased, total money made, and the number of views of the
+books. I want you, for every book, record those metrics, and put the total
+numbers of every metric in the dashboard tab to be seen to the admin with respect
+to time.
+
+CODEX:
+Added analytics tracking to the system.
+
+Backend changes:
+- Added analytics events to the JSON data model.
+- Recorded purchase events when a student buys a book.
+- Recorded view/click events when a student opens book details.
+- Added backfill logic so existing student purchase issues can become analytics
+  history.
+- Added admin dashboard filtering by date range.
+- Added per-book analytics totals:
+  - Purchases
+  - Revenue
+  - Clicks/views
+
+Frontend changes:
+- Added date filters to the admin dashboard.
+- Added dashboard metric cards for:
+  - Purchased books
+  - Revenue
+  - Book clicks
+- Added analytics charts.
+- Added per-book metric columns in the admin Books tab:
+  - Purchases
+  - Revenue
+  - Clicks
+
+Verified the frontend build and backend syntax.
+
+Ahmed:
+Can you set the time filter to the maximum time period, like make the start the
+earliest day of the purchases hard coded and the end date today dynamic, and add
+some dumb dates for the books so I can test the chart effectively.
+
+CODEX:
+Updated the dashboard date defaults.
+
+Changes made:
+- Set default From date to 2026-05-01.
+- Set default To date dynamically to the current local date.
+- Added demo analytics events across May 2026.
+- Added demo purchase, revenue, and click data so the admin charts have useful
+  test data.
+- Added the same demo analytics to the seed data so resets keep test history.
+
+Verified JSON validity, frontend build, and dashboard API response.
+
+Ahmed:
+Can you please add some dumb data to the clicks as well, and make them dynamic,
+so when I click more those numbers increase?
+
+CODEX:
+Added more seeded click/view analytics and made the click data update
+dynamically.
+
+Changes made:
+- Added additional view/click demo events across May 2026.
+- Updated the student book details flow so opening Details records a view.
+- Refreshed book data after a view is recorded so the latest backend count is
+  reflected.
+- Verified through the API that a book's view count increases after a click.
+
+Ahmed:
+The number of clicks is 0 in the admin chart, can you add dumb numbers to the
+number of clicks so I can test them on the dashboard?
+
+CODEX:
+Checked the dashboard API and found the backend already returned click data, but
+the chart made clicks look flat because revenue used a much larger scale.
+
+Changes made:
+- Added more live click records through the running backend.
+- Updated chart scaling so click data became visible.
+- Verified the admin dashboard returned 35 clicks.
+
+Ahmed:
+As the current chart looks weird, can you separate every metric alone to have a
+separate chart and put numbers in the y axis rather than percent?
+
+CODEX:
+Split the admin analytics chart into three separate charts:
+- Purchased books
+- Revenue
+- Book clicks
+
+Each chart now has its own y-axis and displays real numeric values instead of
+percentages.
+
+Verified the frontend build and backend checks.
+
+Ahmed:
+Some dumb data in the number of purchased books doesn't make any sense on the
+graph. Some numbers have decimal representation. How can someone buy 2.3 books?
+Also for the graphs, can you put them after each other, one graph taking the
+whole width of the tab, then another, then another?
+
+CODEX:
+Fixed the chart display.
+
+Changes made:
+- Purchase and click chart y-axis labels now use whole numbers only.
+- Revenue still uses currency formatting.
+- The three dashboard charts are stacked vertically.
+- Each chart takes the full dashboard width for readability.
+
+Verified the frontend build and backend checks.
+
+Ahmed:
+Make the author field in the Add Book a text entry, not a pickup menu.
+
+CODEX:
+Changed the Add/Edit Book form author input.
+
+Frontend changes:
+- Replaced the author dropdown with a text input.
+- The form now sends authorName instead of authorId.
+
+Backend changes:
+- If the typed author already exists, the backend reuses that author.
+- If the typed author is new, the backend automatically creates the author and
+  assigns it to the book.
+
+Verified the frontend build and backend syntax.
+
+Ahmed:
+Remove the add author component in the Authors tab.
+
+CODEX:
+Removed the add-author component from the Authors tab.
+
+Changes made:
+- Authors tab now shows the authors table directly.
+- Edit and delete still work.
+- The edit form only appears after clicking an author's edit button.
+- New authors are now mainly created through the Add/Edit Book form when a new
+  author name is typed.
+
+Verified the frontend build.
+
+Ahmed:
+In the Books tab for the students, there is a problem: the frontend is not good,
+the buttons and details are messed up and not inside the bigger container. Put
+only 3 books per row and fix the component sizes and look.
+
+CODEX:
+Improved the student Books tab card layout.
+
+Changes made:
+- Desktop layout now shows exactly 3 books per row.
+- Tablet layout shows 2 books per row.
+- Mobile layout shows 1 book per row.
+- Cards now use a vertical layout with stable image height.
+- Long titles are clamped to 2 lines.
+- Author and category text stay contained.
+- ISBN, price, available count, and buttons stay inside each card.
+- Buttons have stable sizing and no longer overflow.
+
+Verified the frontend build.
+
+Ahmed:
+Fix the Buy button so it is disabled if the user already has the book, and they
+can delete a book they have from their library. Also add a download button for
+the book: if they bought it, they can download the PDF. When the admin uploads a
+new book, they can upload the PDF. The user can enter the Issued Books tab any
+time and re-download the PDF.
+
+CODEX:
+Added ownership, PDF upload, PDF download, duplicate-buy protection, and library
+removal.
+
+Backend changes:
+- Added book PDF storage under server/uploads/bookpdf.
+- Added PDF upload support to admin Add/Edit Book.
+- Stored the uploaded PDF filename on the book record as bookPdf.
+- Added an authenticated student download endpoint:
+  GET /api/books/:id/download
+- Download is allowed only when the student owns/has issued that book.
+- Added student ownership information to /api/books:
+  - studentHasBook
+  - studentIssueId
+  - hasPdf
+- Added backend duplicate-buy protection.
+- Added DELETE /api/student/issues/:id so a student can remove a book from their
+  library.
+- Added a demo PDF for existing books so downloads can be tested immediately.
+
+Frontend changes:
+- Disabled Buy when the student already has the book.
+- Replaced Buy with Download for books the student already owns.
+- Added Download PDF button in the book details modal for owned books.
+- Added Download and Remove buttons to the student Issued Books tab.
+- Added PDF file input to the admin Add/Edit Book form.
+
+Verified:
+- Frontend build passed.
+- Backend syntax and JSON checks passed.
+- Authenticated PDF download returned 200.
+- Duplicate buy attempt was blocked with the expected message.
+
+Current software state:
+- React/Vite frontend
+- Express backend
+- JSON file persistence
+- Admin and student authentication
+- Admin dashboard analytics with date filtering
+- Per-book analytics
+- Book purchase tracking
+- Book view/click tracking
+- Admin book management with image and PDF upload
+- Student book browsing, buying, downloading, and library removal
+- Author creation through typed author names in Add/Edit Book
+- Responsive student book card layout
